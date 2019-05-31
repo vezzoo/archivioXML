@@ -9,7 +9,6 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Parallax from "./components/Parallax";
 import './Home.css';
 import Dropzone from 'react-dropzone'
-
 import bg from "./img/bg.jpg";
 import Button from "@material-ui/core/es/Button/Button";
 import TextField from "@material-ui/core/TextField";
@@ -17,6 +16,7 @@ import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from '@material-ui/icons/Delete';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Grid from "@material-ui/core/Grid";
+import converter from "xml-js";
 
 const styles = {
     centerAlign: {
@@ -66,8 +66,6 @@ class Home extends React.Component {
                 this.forceUpdate();
             }
         });
-
-        console.log(this.state.wrong);
 
         return this.state.valKeys.length === unique.length;
     }
@@ -264,20 +262,41 @@ class Home extends React.Component {
                                 }
                             });
 
-                            /*const React = require("react");
-                            const ReactDomServer = require("react-dom/server");
+                            let json = {
+                                "declaration": {
+                                    "attributes": {
+                                        "version": "1.0",
+                                        "encoding": "utf-8"
+                                    }
+                                },
+                                "elements": [
+                                    {
+                                        "type": "element",
+                                        "name": "Root",
+                                        "attributes": {
+                                            "fileName": this.state.fileName[0]
+                                        },
+                                        "elements": [
 
-                            const Root = (props) => React.createElement("Root", props);
-                            const Key = (props) => React.createElement("Key", props);
+                                        ]
+                                    }
+                                ]
+                            };
 
-                            const elementXML = ReactDomServer.renderToStaticMarkup(
-                                <Root fileName={this.state.fileName}>
-                                    <Key key={LA KEY}>
-                                        VALUE
-                                    </Key>
-                                </Root>
-                            )
-                            console.log(elementXML);*/
+                            let i = 0;
+                            this.state.valKeys.forEach((e) => {
+                                json.elements[0].elements.push({
+                                    "type": "element",
+                                    "name": "Key" + i,
+                                    "attributes": {
+                                        "key": e.key,
+                                        "value": e.val
+                                    }
+                                });
+                                i++;
+                            });
+
+                            this.state.converted = converter.json2xml(json, {compact: false, ignoreComment: true, spaces: 4});
                         }} color="primary">
                             Inserisci
                         </Button>
