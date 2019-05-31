@@ -257,46 +257,51 @@ class Home extends React.Component {
                             this.setState({wrong: []}, () => {
                                 if (this.dataAreCorrect()) {
                                     this.setState({openValKeys: false});
+
+                                    let json = {
+                                        "declaration": {
+                                            "attributes": {
+                                                "version": "1.0",
+                                                "encoding": "utf-8"
+                                            }
+                                        },
+                                        "elements": [
+                                            {
+                                                "type": "element",
+                                                "name": "Root",
+                                                "attributes": {
+                                                    "fileName": this.state.fileName[0]
+                                                },
+                                                "elements": [
+
+                                                ]
+                                            }
+                                        ]
+                                    };
+
+                                    let i = 0;
+                                    this.state.valKeys.forEach((e) => {
+                                        json.elements[0].elements.push({
+                                            "type": "element",
+                                            "name": "Key" + i,
+                                            "attributes": {
+                                                "key": e.key,
+                                                "value": e.val
+                                            }
+                                        });
+                                        i++;
+                                    });
+
+                                    let converted = converter.json2xml(json, {compact: false, ignoreComment: true, spaces: 4});
+                                    this.setState({converted: converted});
+
+                                    console.log(converted)
+                                    console.log(this.state.converted)
                                 } else {
                                     this.forceUpdate();
                                 }
                             });
 
-                            let json = {
-                                "declaration": {
-                                    "attributes": {
-                                        "version": "1.0",
-                                        "encoding": "utf-8"
-                                    }
-                                },
-                                "elements": [
-                                    {
-                                        "type": "element",
-                                        "name": "Root",
-                                        "attributes": {
-                                            "fileName": this.state.fileName[0]
-                                        },
-                                        "elements": [
-
-                                        ]
-                                    }
-                                ]
-                            };
-
-                            let i = 0;
-                            this.state.valKeys.forEach((e) => {
-                                json.elements[0].elements.push({
-                                    "type": "element",
-                                    "name": "Key" + i,
-                                    "attributes": {
-                                        "key": e.key,
-                                        "value": e.val
-                                    }
-                                });
-                                i++;
-                            });
-
-                            this.state.converted = converter.json2xml(json, {compact: false, ignoreComment: true, spaces: 4});
                         }} color="primary">
                             Inserisci
                         </Button>
