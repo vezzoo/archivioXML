@@ -116,6 +116,16 @@ class Home extends React.Component {
 
     onDropHandler = (acceptedFiles) => {
         console.log("file: " + acceptedFiles);
+        this.setState({
+            fileName: "",
+            valKeys: [],
+            openValKeys: false,
+            wrong: [],
+            wrongColor: "red",
+            wrongText: "Inserire una chiave univoca",
+            rightColor: "black",
+            rightText: "Inserire la chiave"
+        });
         const file = acceptedFiles.map((file) =>
             file.name
         );
@@ -293,10 +303,9 @@ class Home extends React.Component {
                                     });
 
                                     let converted = converter.json2xml(json, {compact: false, ignoreComment: true, spaces: 4});
-                                    this.setState({converted: converted});
-
-                                    console.log(converted)
-                                    console.log(this.state.converted)
+                                    this.setState({converted: converted}, () => {
+                                        console.log("converted to XML: " + this.state.converted)
+                                    });
                                 } else {
                                     this.forceUpdate();
                                 }
